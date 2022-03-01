@@ -29,7 +29,7 @@ const App = () => {
                       ),
                 })} />
                 <Stack.Screen name="Profile" component={Profile} options={{ title: 'Perfil' }} />
-                <Stack.Screen name="ScreenMap" component={ScreenMap} options={{ title: 'Mapa de monumentos' }}/>
+                <Stack.Screen name="ScreenMap" component={ScreenMap} options={{ title: 'Mapa de monumentos22' }}/>
                 <Stack.Screen name="ScreenList" component={ScreenList} options={{ title: 'Lista de monumentos' }}/>
                 <Stack.Screen name="Monument" component={Monument} options={{ title: 'Detalle del monumento' }}/>
             </Stack.Navigator>
