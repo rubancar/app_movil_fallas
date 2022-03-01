@@ -1,11 +1,15 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { TextInput, StyleSheet, Text, View, Button, Alert } from 'react-native';
+//import { StatusBar } from 'expo-status-bar';
+import { TextInput, StyleSheet, Text, View, Button, Alert, StatusBar } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
+          <StatusBar
+            animated={false}
+            backgroundColor="#000000"
+            hidden={false} />
     
           <View>
             <Text style={styles.welcome_text}>!Bienvenido¡</Text>
@@ -22,14 +26,16 @@ const Login = ({ navigation }) => {
     
             <Button 
               title = "Entrar" 
-              onPress={() => navigation.dispatch(
-                StackActions.replace('Home', {
+              onPress={() => navigation.dispatch({
+                ...StackActions.replace('Home', {
                   user: 'ruben',
-                })
-              )}
+                }),
+                source: route.key,
+                target: navigation.getState().key,
+              })}
             />
           </View>
-          <StatusBar style="auto" />
+        
         </View>
       );
 };
