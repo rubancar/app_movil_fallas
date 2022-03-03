@@ -41,7 +41,7 @@ const Login = ({ navigation, route }) => {
         </View>
 
         <Button
-          title="Entrar2"
+          title="Entrar"
           onPress={() => {
             saveText(myText);
             // cambiar de screen => Home
