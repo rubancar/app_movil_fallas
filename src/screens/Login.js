@@ -8,8 +8,11 @@ const Login = ({ navigation, route }) => {
 
   const [myText, setMyText] = useState('');
 
+  // Mediante saveText guardaremos el valor del usuario
   const saveText = async (usuario) => {
     try {
+      // AsyncStorage implementa una persistencia de datos local que siempre es del tipo clave-valor
+      // Aqui estamos guardando en la clave username y valor de usuario
       await AsyncStorage.setItem('username', usuario);
     } catch (error) {
       console.log(error);
@@ -24,12 +27,14 @@ const Login = ({ navigation, route }) => {
         hidden={false} />
 
       <View>
-        <Text style={styles.welcome_text}>!Bienvenido¡</Text>
+        {/* Para enlazar un style simplemente debemos hacer style.nombreConstEstilo */}
+        <Text style={styles.welcome_text}>¡Bienvenido!</Text>
 
         <View style={styles.view_input}>
           <Text style={styles.label_input}>Usuario</Text>
           <TextInput 
             style={styles.input}
+            // Anyadimos el evento de onChangeText para anyadir el texto introducido en el TextInput
             onChangeText={text => setMyText(text)}
             value={myText}
           />
@@ -43,6 +48,7 @@ const Login = ({ navigation, route }) => {
         <Button
           title="Entrar"
           onPress={() => {
+            // Cuando se pulse el boton Entrar guardaremos el valor de myText
             saveText(myText);
             // cambiar de screen => Home
             navigation.dispatch({
@@ -60,6 +66,7 @@ const Login = ({ navigation, route }) => {
   );
 };
 
+// Aqui definimos todos los estilos que seran invocados desde la vista
 const styles = StyleSheet.create({
   container: {
     flex: 1,

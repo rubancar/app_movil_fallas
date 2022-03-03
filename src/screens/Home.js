@@ -3,10 +3,16 @@ import { Text, View, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({ navigation }) => {
+
+    // Para anyadir variables que deban ser actualizadas por la App durante su ejecucion utilizaremos useState
+    // En los argumentos de const definimos la variable que cambiara (username) y la funcion que se encargara de su actualizacion (setUsername)
+    // Ademas en useState podemos definir un valor por defecto como argumento
     const [username, setUsername] = useState('');
 
     const readUsername = async () => {
         try {
+            // AsyncStorage implementa una persistencia de datos local que siempre es del tipo clave-valor
+            // Aqui vamos a recoger la informacion guardada en el item username
             const value = await AsyncStorage.getItem('username');
             if (value !== null) {
                 console.log(value);
@@ -17,7 +23,8 @@ const Home = ({ navigation }) => {
         }
     };
 
-    // se ejecuta al iniciar el Componente
+    // Para que el useState se pueda utilizar necesitamos el useEffect que se encargara de actualizar el componente
+    // Si dejeamos el ultimo parametro vacio ([]) indicamos que esta funcion se ejecuta al iniciar el Componente
     useEffect(() => {
         readUsername();
     }, []);
