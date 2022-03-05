@@ -16,7 +16,8 @@ const Stack = createStackNavigator();
 const App = () => {
 
     return (
-        // Desde el navigation container gestionamos toda la nevegacion de la app
+        // El modo de navegacion elegido para nuestra App es el de Stack Navigation
+        // Desde el navigation container gestionamos toda la navegacion de la app
         <NavigationContainer>
             {/* En el initialRouteName le indicamos cual es la pagina inicial de nuestra App */}
             <Stack.Navigator initialRouteName="Login">

@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TextInput } from 'react-native-gesture-handler';
+import ReactDOM from 'react-dom';
 
+// Para permitir la navegacion las paginas deben recibir el objeto navigation
 const Home = ({ navigation }) => {
 
     // Para anyadir variables que deban ser actualizadas por la App durante su ejecucion utilizaremos useState
@@ -9,13 +12,12 @@ const Home = ({ navigation }) => {
     // Ademas en useState podemos definir un valor por defecto como argumento
     const [username, setUsername] = useState('');
 
+
     const readUsername = async () => {
         try {
-            // AsyncStorage implementa una persistencia de datos local que siempre es del tipo clave-valor
-            // Aqui vamos a recoger la informacion guardada en el item username
             const value = await AsyncStorage.getItem('username');
+            console.log("Usuario leido Home: "+value);
             if (value !== null) {
-                console.log(value);
                 setUsername(value);
             }
         } catch (error) {
@@ -24,21 +26,29 @@ const Home = ({ navigation }) => {
     };
 
     // Para que el useState se pueda utilizar necesitamos el useEffect que se encargara de actualizar el componente
-    // Si dejeamos el ultimo parametro vacio ([]) indicamos que esta funcion se ejecuta al iniciar el Componente
+    // Si dejeamos el ultimo parametro vacio ([]) indicamos que esta funcion se ejecuta la 1a vez que se renderiza el componente
     useEffect(() => {
+        console.log("Refresco");
         readUsername();
     }, []);
+
+    // Si quisiesemos que se redibujara despues de cada renderizado hariamos:
+    /*useEffect(() => {
+        console.log('I run on every render');
+      });*/
+    
+
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>Bienvenido {username}</Text>
             <Button
                 title="Ver mapa"
-                onPress={() => navigation.navigate('ScreenMap', { myData1: 1, myMessage: 'ruben' })}
+                onPress={() => navigation.navigate('ScreenMap')}
             />
             <Button
                 title="Ver listado"
-                onPress={() => navigation.navigate('ScreenList', { myData1: 1, myMessage: 'ruben' })}
+                onPress={() => navigation.navigate('ScreenList')}
             />
         </View>
     );

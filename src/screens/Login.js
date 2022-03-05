@@ -40,17 +40,21 @@ const Login = ({ navigation, route }) => {
           />
         </View>
 
+        {/*
         <View style={styles.view_input}>
           <Text style={styles.label_input}>Contraseña</Text>
           <TextInput style={styles.input} />
-        </View>
+        </View>*/}
 
         <Button
           title="Entrar"
+          
+          // Para cambiar de screen => Home - Opcion 1. Con esta opcion se fuerza el renderizado
+          /*
           onPress={() => {
             // Cuando se pulse el boton Entrar guardaremos el valor de myText
             saveText(myText);
-            // cambiar de screen => Home
+            
             navigation.dispatch({
               ...StackActions.replace('Home', {
                 user: 'ruben',
@@ -58,7 +62,11 @@ const Login = ({ navigation, route }) => {
               source: route.key,
               target: navigation.getState().key,
             })
-          }}
+          }}*/
+
+          // Para cambiar de screen => Home - =Opcion 2. El navigate tambien permite un segundo parametro para enviar informacion del tipo clave-valor (myData1: 1, myMessage: msg)
+          // Cuando se pulse el boton Entrar guardaremos el valor de myText
+          onPress={() =>{saveText(myText); navigation.navigate('Home')}}
         />
       </View>
 
