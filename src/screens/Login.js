@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 //import { StatusBar } from 'expo-status-bar';
 import { TextInput, StyleSheet, Text, View, Button, Alert, StatusBar } from 'react-native';
 import { StackActions } from '@react-navigation/native';
@@ -7,6 +7,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = ({ navigation, route }) => {
 
   const [myText, setMyText] = useState('');
+
+  const [JSON_DATA, setJSON_DATA] = useState('');
+
+  const loadData = () => {
+      fetch('https://mapas.valencia.es/lanzadera/opendata/Monumentos_falleros/JSON?srsName=EPSG:4326')
+          .then((response) => response.json())
+          .then((responseJson) => { console.log(responseJson.features); setJSON_DATA(responseJson.features); })
+          .catch((error) => {
+              console.error(error);
+          });
+  }
+
+  // Cargamos nuestro JSON nada mas llegar a este componente
+  useEffect(() => {
+      console.log("Cargamos JSON");
+      loadData();
+  }, []);
 
   // Mediante saveText guardaremos el valor del usuario
   const saveText = async (usuario) => {
@@ -66,7 +83,7 @@ const Login = ({ navigation, route }) => {
 
           // Para cambiar de screen => Home - =Opcion 2. El navigate tambien permite un segundo parametro para enviar informacion del tipo clave-valor (myData1: 1, myMessage: msg)
           // Cuando se pulse el boton Entrar guardaremos el valor de myText
-          onPress={() =>{saveText(myText); navigation.navigate('Home')}}
+          onPress={() =>{saveText(myText); navigation.navigate('Home', { JSON_DATA:JSON_DATA })}}
         />
       </View>
 

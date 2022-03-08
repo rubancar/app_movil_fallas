@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native';
 // Para recoger las variables enviadas mediante el navigation.navigate debemos recoger el objeto route ({route.params.myVariable})
 const ScreenList = ({ navigation, route }) => {
 
+    /* 
     const [JSON_DATA, setJSON_DATA] = useState('');
 
     const loadData = () => {
@@ -21,7 +22,7 @@ const ScreenList = ({ navigation, route }) => {
     useEffect(() => {
         console.log("Cargamos JSON");
         loadData();
-    }, []);
+    }, []);*/
 
     const VLCitem = ({ item }) => {
         return (
@@ -42,7 +43,7 @@ const ScreenList = ({ navigation, route }) => {
             <Text>Pantalla con la lista de monumentos</Text>
 
             <FlatList
-                data={JSON_DATA}
+                data={route.params.JSON_DATA}
                 renderItem={VLCitem}
                 keyExtractor={item => item.properties.id}
             />

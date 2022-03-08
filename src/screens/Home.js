@@ -5,7 +5,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import ReactDOM from 'react-dom';
 
 // Para permitir la navegacion las paginas deben recibir el objeto navigation
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
 
     // Para anyadir variables que deban ser actualizadas por la App durante su ejecucion utilizaremos useState
     // En los argumentos de const definimos la variable que cambiara (username) y la funcion que se encargara de su actualizacion (setUsername)
@@ -29,6 +29,7 @@ const Home = ({ navigation }) => {
     // Si dejeamos el ultimo parametro vacio ([]) indicamos que esta funcion se ejecuta la 1a vez que se renderiza el componente
     useEffect(() => {
         console.log("Refresco");
+        console.log(route.params.JSON_DATA);
         readUsername();
     }, []);
 
@@ -44,11 +45,11 @@ const Home = ({ navigation }) => {
             <Text>Bienvenido {username}</Text>
             <Button
                 title="Ver mapa"
-                onPress={() => navigation.navigate('ScreenMap')}
+                onPress={() => navigation.navigate('ScreenMap', { JSON_DATA:route.params.JSON_DATA })}
             />
             <Button
                 title="Ver listado"
-                onPress={() => navigation.navigate('ScreenList')}
+                onPress={() => navigation.navigate('ScreenList',  { JSON_DATA:route.params.JSON_DATA })}
             />
         </View>
     );
