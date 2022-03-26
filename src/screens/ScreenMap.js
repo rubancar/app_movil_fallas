@@ -21,9 +21,9 @@ const ScreenMap = ({ navigation, route }) => {
           }
     
           let location_ = await Location.getCurrentPositionAsync({});
-          console.log(location_);
+          //console.log(location_);
           setLocation(location_);
-           console.log(route.params.JSON_DATA);
+          //console.log(route.params.JSON_DATA);
            
         })();
       }, []);
@@ -31,7 +31,7 @@ const ScreenMap = ({ navigation, route }) => {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>Pantalla con monumentos en un mapa</Text>
-            <MapView
+            <MapView onPress={() => {console.log("Holaaa") }}
                 initialRegion={{
                     latitude: 39.4698,
                     longitude: -0.3763,
@@ -47,15 +47,13 @@ const ScreenMap = ({ navigation, route }) => {
             <Marker
               key={i}
               coordinate={{ latitude : marker.geometry.coordinates[1] , longitude : marker.geometry.coordinates[0]} }
+              onPress={() => { { navigation.navigate('Monument', { infoMonument: marker.properties}) }}}
               
             />
           )}   
                 
-                <Marker
-                    coordinate={ { latitude : 39.4725, longitude : -0.3506 }}
-                />
             </MapView>
-            <Button
+            {/* <Button
                 color="#a4c936"
                 title="Cambiar a lista"
                 onPress={() => navigation.dispatch({
@@ -65,7 +63,7 @@ const ScreenMap = ({ navigation, route }) => {
                     source: route.key,
                     target: navigation.getState().key,
                   })}
-            />
+            /> */}
         </View>
     );
 };
