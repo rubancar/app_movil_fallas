@@ -3,13 +3,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native';
 import Home from './src/screens/Home';
-import Detail from './src/screens/Detail';
 import Login from './src/screens/Login';
 import Monument from './src/screens/Monument';
-import ScreenMap from './src/screens/ScreenMap';
-import ScreenList from './src/screens/ScreenList';
 import Profile from './src/screens/Profile';
 import { FontAwesome } from '@expo/vector-icons';
+import ScreenMapList from  './src/screens/ScreenMapList';
 
 const Stack = createStackNavigator();
 
@@ -53,37 +51,15 @@ const App = () => {
                 {/***********************************/}
                 <Stack.Screen name="Profile" component={Profile} options={{ title: 'Perfil' }} />
 
-                {/***********************************/}
-                {/****** PANTALLA DE MAPA **********/}
-                {/***********************************/}
-                <Stack.Screen name="ScreenMap" component={ScreenMap} options={({ navigation, route }) => ({
-                    title: 'Mapa de monumentos',
-                    // Hay un atributo que es headerRight que nos sirve para anyadir el icono de perfil en la parte derecha de la barra de tareas
-                    // Esto deberemos anyadirlo en todas aquellas zonas donde deseamos que aparezca
-                    headerRight: () => (
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Profile', { myData1: 1 })}
-                            style={{ flex: 1, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10 }}>
-                            <FontAwesome name="user-circle-o" size={30} color="black" />
-                        </TouchableOpacity>
-                    ),
-                })} />
-
-                {/***********************************/}
-                {/****** PANTALLA DE LISTADO **********/}
-                {/***********************************/}
-                <Stack.Screen name="ScreenList" component={ScreenList} options={({ navigation, route }) => ({
-                    title: 'Lista de monumentos',
-                    // Hay un atributo que es headerRight que nos sirve para anyadir el icono de perfil en la parte derecha de la barra de tareas
-                    // Esto deberemos anyadirlo en todas aquellas zonas donde deseamos que aparezca
-                    headerRight: () => (
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Profile', { myData1: 1 })}
-                            style={{ flex: 1, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10 }}>
-                            <FontAwesome name="user-circle-o" size={30} color="black" />
-                        </TouchableOpacity>
-                    ),
-                })} />
+                {/************************************/}
+                {/* PANTALLA DE TABS (LISTADO Y MAPA) */}
+                {/************************************/}
+                <Stack.Screen name="ScreenMapList" 
+                    component={ScreenMapList} 
+                    options={({ navigation, route }) => ({
+                        title: 'Fallas',
+                    })} 
+                />
 
                 {/***********************************/}
                 {/**** PANTALLA DETALLE MONUMENTO ****/}

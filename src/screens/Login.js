@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 //import { StatusBar } from 'expo-status-bar';
 import { TextInput, StyleSheet, Text, View, Button, Alert, StatusBar } from 'react-native';
-import { StackActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation, route }) => {
@@ -13,7 +12,7 @@ const Login = ({ navigation, route }) => {
   const loadData = () => {
       fetch('https://mapas.valencia.es/lanzadera/opendata/Monumentos_falleros/JSON?srsName=EPSG:4326')
           .then((response) => response.json())
-          .then((responseJson) => { console.log(responseJson.features); setJSON_DATA(responseJson.features); })
+          .then((responseJson) => { setJSON_DATA(responseJson.features); })
           .catch((error) => {
               console.error(error);
           });

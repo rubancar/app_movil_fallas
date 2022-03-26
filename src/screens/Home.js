@@ -1,59 +1,103 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, Button, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TextInput } from 'react-native-gesture-handler';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react'
+import { StyleSheet, View, Image, Button, Dimensions } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import fallas_1 from '../../assets/home/fallas_1.jpg'
+import fallas_2 from '../../assets/home/fallas_2.jpg'
 
-// Para permitir la navegacion las paginas deben recibir el objeto navigation
-const Home = ({ navigation, route }) => {
+const deviceWidth = Dimensions.get('window').width;
 
-    // Para anyadir variables que deban ser actualizadas por la App durante su ejecucion utilizaremos useState
-    // En los argumentos de const definimos la variable que cambiara (username) y la funcion que se encargara de su actualizacion (setUsername)
-    // Ademas en useState podemos definir un valor por defecto como argumento
-    const [username, setUsername] = useState('');
+export default class Home extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            username: ""
+        }
+    }
 
-
-    const readUsername = async () => {
+    readUsername = async () => {
         try {
             const value = await AsyncStorage.getItem('username');
             console.log("Usuario leido Home: "+value);
             if (value !== null) {
-                setUsername(value);
+                this.setState({username: value});
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-    // Para que el useState se pueda utilizar necesitamos el useEffect que se encargara de actualizar el componente
-    // Si dejeamos el ultimo parametro vacio ([]) indicamos que esta funcion se ejecuta la 1a vez que se renderiza el componente
-    useEffect(() => {
-        console.log("Refresco");
-        console.log(route.params.JSON_DATA);
-        readUsername();
-    }, []);
 
-    // Si quisiesemos que se redibujara despues de cada renderizado hariamos:
-    /*useEffect(() => {
-        console.log('I run on every render');
-      });*/
-    
+    componentDidMount() {
+        this.readUsername();
+    }
 
 
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Bienvenido {username}</Text>
-            <Button
-                title="Ver mapa"
-                onPress={() => navigation.navigate('ScreenMap', { JSON_DATA:route.params.JSON_DATA })}
-            />
-            <Button
-                title="Ver listado"
-                onPress={() => navigation.navigate('ScreenList',  { JSON_DATA:route.params.JSON_DATA })}
-            />
-        </View>
-    );
-};
+
+    render() {
+
+        return (
+            <View style={styles.container}>
 
 
-export default Home;
+                {/* IMAGENES */}
+                <View style={styles.img_container}>
+
+                    {/* UPPER IMAGE */}
+                    <View style={styles.img_box}>
+                        <Image source={fallas_1} style={styles.img} resizeMode={'stretch'} />
+                    </View>
+
+                    <View style={styles.button}>
+                        <Button 
+                        title={`HOLA ${this.state.username}, VISITA LAS FALLAS`} 
+                        type="success" 
+                        onPress={() => this.props.navigation.navigate('ScreenMapList',  { JSON_DATA:this.props.route.params.JSON_DATA })}/>
+                    </View>
+
+                    {/* BELOW IMAGE */}
+                    <View style={styles.img_box}>
+                        <Image source={fallas_2} style={styles.img} resizeMode={'stretch'} />
+                    </View>
+                </View>
+
+                {/* BUSCAR */}
+               
+            </View>
+        )
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#212121',
+    },
+    img_container: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
+    img_box: {
+        flex: 1,
+        backgroundColor: '#FFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    img: {
+        height: '100%',
+        width: '100%',
+    },
+    img_loading: {
+        height: '70%',
+        width: '70%',
+    },
+    button: {
+        backgroundColor: '#fff',
+        position: 'absolute',
+        borderRadius: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        zIndex: 99
+    },
+});
