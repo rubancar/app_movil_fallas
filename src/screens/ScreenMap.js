@@ -23,6 +23,8 @@ const ScreenMap = ({ navigation, route }) => {
           let location_ = await Location.getCurrentPositionAsync({});
           console.log(location_);
           setLocation(location_);
+           console.log(route.params.JSON_DATA);
+           
         })();
       }, []);
 
@@ -40,6 +42,14 @@ const ScreenMap = ({ navigation, route }) => {
                 followUserLocation = {true}
                 zoomEnabled = {true}
                 style={styles.map} >
+
+{route.params.JSON_DATA.map((marker, i) => 
+            <Marker
+              key={i}
+              coordinate={{ latitude : marker.geometry.coordinates[1] , longitude : marker.geometry.coordinates[0]} }
+              
+            />
+          )}   
                 
                 <Marker
                     coordinate={ { latitude : 39.4725, longitude : -0.3506 }}
@@ -69,7 +79,7 @@ const styles = StyleSheet.create({
     },
     map: {
       width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height,
+      height: (Dimensions.get('window').height)-220,
     },
   });
 
