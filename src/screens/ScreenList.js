@@ -5,6 +5,28 @@ import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNat
 // Para recoger las variables enviadas mediante el navigation.navigate debemos recoger el objeto route ({route.params.myVariable})
 const ScreenList = ({ navigation, route }) => {
 
+    console.log("**********************************************")
+    console.log(route.params.JSON_DATA[0].properties.nombre)
+
+    /*
+    route.params.JSON_DATA.sort( function( a, b ) {
+        a = a.properties.nombre.toLowerCase();
+        b = b.properties.nombre.toLowerCase();
+    
+        return a < b ? -1 : a > b ? 1 : 0;
+    });*/
+
+    // Funcion para ordenar
+    const ordenarPorNombre = (campo) => {
+        route.params.JSON_DATA.sort( function( a, b ) {
+            a = a.properties[campo].toLowerCase();
+            b = b.properties[campo].toLowerCase();
+        
+            return a < b ? -1 : a > b ? 1 : 0;
+        });
+    }
+    
+
     // Funcion para extraer el color de la seccion
     const getBackgroundColor = seccion => {
         if (seccion === 'E') {
@@ -98,6 +120,8 @@ const ScreenList = ({ navigation, route }) => {
     }
 
     return (
+        // Por defecto ordenamos el JSON por seccion
+        ordenarPorNombre("seccion"),
         <View style={styles.container}>
             <FlatList
                 data={route.params.JSON_DATA}

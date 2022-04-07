@@ -12,7 +12,8 @@ const Login = ({ navigation, route }) => {
   const loadData = () => {
       fetch('https://mapas.valencia.es/lanzadera/opendata/Monumentos_falleros/JSON?srsName=EPSG:4326')
           .then((response) => response.json())
-          .then((responseJson) => { setJSON_DATA(responseJson.features);console.log(responseJson.features); })
+          //.then((responseJson) => { setJSON_DATA(responseJson.features);console.log(responseJson.features); })
+          .then((responseJson) => { setJSON_DATA(responseJson.features); })
           
           .catch((error) => {
               console.error(error);
