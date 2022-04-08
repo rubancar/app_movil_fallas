@@ -30,7 +30,6 @@ const ScreenMap = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Pantalla con monumentos en un mapa</Text>
             <MapView onPress={() => {console.log("Holaaa") }}
                 initialRegion={{
                     latitude: 39.4698,
@@ -51,19 +50,7 @@ const ScreenMap = ({ navigation, route }) => {
               
             />
           )}   
-                
             </MapView>
-            {/* <Button
-                color="#a4c936"
-                title="Cambiar a lista"
-                onPress={() => navigation.dispatch({
-                    ...StackActions.replace('ScreenList', {
-                      data: 'data',
-                    }),
-                    source: route.key,
-                    target: navigation.getState().key,
-                  })}
-            /> */}
         </View>
     );
 };
@@ -77,7 +64,7 @@ const styles = StyleSheet.create({
     },
     map: {
       width: Dimensions.get('window').width,
-      height: (Dimensions.get('window').height)-220,
+      height: (Dimensions.get('window').height) - 100,
     },
   });
 

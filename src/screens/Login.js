@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 //import { StatusBar } from 'expo-status-bar';
 import { TextInput, StyleSheet, Text, View, Button, Alert, StatusBar } from 'react-native';
+import { StackActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation, route }) => {
@@ -68,23 +69,17 @@ const Login = ({ navigation, route }) => {
           title="Entrar"
           
           // Para cambiar de screen => Home - Opcion 1. Con esta opcion se fuerza el renderizado
-          /*
+          
           onPress={() => {
             // Cuando se pulse el boton Entrar guardaremos el valor de myText
             saveText(myText);
             
             navigation.dispatch({
-              ...StackActions.replace('Home', {
-                user: 'ruben',
-              }),
+              ...StackActions.replace('Home', { JSON_DATA:JSON_DATA }),
               source: route.key,
               target: navigation.getState().key,
             })
-          }}*/
-
-          // Para cambiar de screen => Home - =Opcion 2. El navigate tambien permite un segundo parametro para enviar informacion del tipo clave-valor (myData1: 1, myMessage: msg)
-          // Cuando se pulse el boton Entrar guardaremos el valor de myText
-          onPress={() =>{saveText(myText); navigation.navigate('Home', { JSON_DATA:JSON_DATA })}}
+          }}
         />
       </View>
 
