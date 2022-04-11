@@ -17,7 +17,6 @@ async function setFallaAsVisited(fallaId) {
     await AsyncStorage.setItem('visitados', JSON.stringify(visitadosObj))
     return visitadosObj
 
-
 }
 
 

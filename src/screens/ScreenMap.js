@@ -3,6 +3,7 @@ import { Text, View, Button, StyleSheet, Dimensions } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { getVisitedFallas } from '../libs/ManageData';
 
 // Para recoger las variables enviadas mediante el navigation.navigate debemos recoger el objeto route ({route.params.myVariable})
 const ScreenMap = ({ navigation, route }) => {
@@ -10,9 +11,12 @@ const ScreenMap = ({ navigation, route }) => {
     // Mantiene la ubicación y errores de la librería
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
+    const [fallasData, setFallasData] = useState(null);
 
     // Ejecuta la 1ra vez que entra al componente
-    useEffect(() => {
+    useEffect(async () => {
+
+        // esto se ejecuta en background
         (async () => {
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
@@ -21,12 +25,32 @@ const ScreenMap = ({ navigation, route }) => {
           }
     
           let location_ = await Location.getCurrentPositionAsync({});
-          //console.log(location_);
           setLocation(location_);
-          //console.log(route.params.JSON_DATA);
-           
         })();
-      }, []);
+
+        const deepCloneData = JSON.parse(JSON.stringify(route.params.JSON_DATA));
+        const fallasDataInDictionary = {}
+        const visitedFallas = await getVisitedFallas()
+        deepCloneData.forEach( falla => {
+
+          let visited = false
+          if (falla.properties.id in visitedFallas) {
+              visited = true
+          }
+
+          fallasDataInDictionary[falla.properties.id] = {
+          id: falla.properties.id,
+          nombre: falla.properties.nombre,
+          seccion: falla.properties.seccion,
+          fallera: falla.properties.fallera,
+          boceto: falla.properties.boceto,
+          visited: visited,
+          latitude: falla.geometry.coordinates[1],
+          longitude: falla.geometry.coordinates[0]
+        }})
+        setFallasData(fallasDataInDictionary)
+
+        }, []);
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -40,14 +64,16 @@ const ScreenMap = ({ navigation, route }) => {
                 showsUserLocation = {true}
                 followUserLocation = {true}
                 zoomEnabled = {true}
+                
                 style={styles.map} >
 
-{route.params.JSON_DATA.map((marker, i) => 
+          { fallasData &&
+          Object.values(fallasData).map((item, i) => 
             <Marker
               key={i}
-              coordinate={{ latitude : marker.geometry.coordinates[1] , longitude : marker.geometry.coordinates[0]} }
-              onPress={() => { { navigation.navigate('Monument', { infoMonument: marker.properties}) }}}
-              
+              coordinate={{ latitude : item.latitude , longitude : item.longitude} }
+              onPress={() => { { navigation.navigate('Monument', { infoMonument: item }) }}}
+              pinColor={ item.visited ? "darkgreen" : "red" }
             />
           )}   
             </MapView>
