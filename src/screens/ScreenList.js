@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { setFallaAsVisited, getVisitedFallas } from '../libs/ManageData';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago } from '../libs/ManageData';
+import * as Location from 'expo-location';
 
 
 // Para recoger las variables enviadas mediante el navigation.navigate debemos recoger el objeto route ({route.params.myVariable})
@@ -28,24 +28,38 @@ const ScreenList = ({ navigation, route }) => {
     // ejecuta la 1ra vez que entra al componenente
     useEffect(async () => {
 
+        // esto se ejecuta en background
+        
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            console.error('Permission to access location was denied');
+            return;
+        }
+    
+        let locationUser = await Location.getCurrentPositionAsync({})
+        const { coords: { latitude, longitude } } = locationUser
+
         const deepCloneData = JSON.parse(JSON.stringify(route.params.JSON_DATA));
-        console.log("after deep clonning")
         const fallasDataInDictionary = {}
         const visitedFallas = await getVisitedFallas()
         deepCloneData.forEach( falla => {
 
-            let visited = false
-            if (falla.properties.id in visitedFallas) {
-                visited = true
+            const { properties, geometry: { coordinates } } = falla
+
+            let visited = null
+            let distance = distanceBetween2Points(latitude, longitude, coordinates[1], coordinates[0]).toFixed(2)
+            if (properties.id in visitedFallas) {
+                visited = visitedFallas[properties.id]
             }
 
             fallasDataInDictionary[falla.properties.id] = {
-            id: falla.properties.id,
-            nombre: falla.properties.nombre,
-            seccion: falla.properties.seccion,
-            fallera: falla.properties.fallera,
-            boceto: falla.properties.boceto,
-            visited: visited
+            id: properties.id,
+            nombre: properties.nombre,
+            seccion: properties.seccion,
+            fallera: properties.fallera,
+            boceto: properties.boceto,
+            visited: visited,
+            distance: distance
         }})
         setFallasData(fallasDataInDictionary)
 
@@ -54,7 +68,7 @@ const ScreenList = ({ navigation, route }) => {
 
     const saveFallaAsVisited = (fallaId) => {
         const fallasDataInDictionary  = fallasData
-        fallasDataInDictionary[fallaId]["visited"] = true
+        fallasDataInDictionary[fallaId]["visited"] = new Date().toISOString()
         /** usamos la notación spread operator para crear un nuevo objeto y lanzar que React
         *   lance un neuvo renderizado */ 
         setFallasData({...fallasDataInDictionary})
@@ -94,9 +108,20 @@ const ScreenList = ({ navigation, route }) => {
                                 </Text>
         
                                 {/** Nombre de la falla */}
-                                <Text style={styles.nombre}>
-                                    {item.nombre}
-                                </Text>
+                                <View>
+                                    <Text style={styles.nombre}>
+                                        {item.nombre}
+                                    </Text>
+
+                                    <Text style={styles.extra_info_list}>
+                                        {
+                                            item.visited ? 
+                                                `Distancia: ${item.distance} km, visitado ${timeago(item.visited, 'es_ES')}` : 
+                                                `Distancia ${item.distance} km`
+                                        }
+                                    </Text>
+                                </View>
+                                
                             </View>
                         </TouchableOpacity>
     
@@ -161,6 +186,11 @@ const styles = StyleSheet.create({
     },
     nombre: {
         textAlignVertical: 'center',
+        marginLeft: 8,
+    },
+    extra_info_list: {
+        fontSize: 11,
+        color: "gray",
         marginLeft: 8,
     },
     seccion: {

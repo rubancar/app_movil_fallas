@@ -65,17 +65,8 @@ const App = () => {
                 {/**** PANTALLA DETALLE MONUMENTO ****/}
                 {/***********************************/}
                 <Stack.Screen name="Monument" component={Monument} options={({ navigation, route }) => ({
-                    title: 'Detalle del monumento',
-                    // Hay un atributo que es headerRight que nos sirve para anyadir el icono de perfil en la parte derecha de la barra de tareas
-                    // Esto deberemos anyadirlo en todas aquellas zonas donde deseamos que aparezca
-                    headerRight: () => (
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Profile', { myData1: 1 })}
-                            style={{ flex: 1, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, paddingRight: 10 }}>
-                            <FontAwesome name="user-circle-o" size={30} color="black" />
-                        </TouchableOpacity>
-                    ),
-                })} />
+                    title: 'Detalle del monumento' })} 
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );

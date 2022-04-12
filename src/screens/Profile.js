@@ -63,6 +63,12 @@ const Profile = ({ navigation, route }) => {
                         })
                       }}
                 />
+
+                <Button
+                    title="Limpiar datos"
+                   
+                    onPress={() => AsyncStorage.clear().then(() => console.log('Cleared'))}
+                />
             </View >
         </View>
     );

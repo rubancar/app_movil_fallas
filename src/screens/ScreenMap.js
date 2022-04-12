@@ -33,20 +33,22 @@ const ScreenMap = ({ navigation, route }) => {
         const visitedFallas = await getVisitedFallas()
         deepCloneData.forEach( falla => {
 
-          let visited = false
-          if (falla.properties.id in visitedFallas) {
-              visited = true
+          const { properties, geometry } = falla
+
+          let visited = null
+          if (properties.id in visitedFallas) {
+              visited = visitedFallas[properties.id]
           }
 
-          fallasDataInDictionary[falla.properties.id] = {
-          id: falla.properties.id,
-          nombre: falla.properties.nombre,
-          seccion: falla.properties.seccion,
-          fallera: falla.properties.fallera,
-          boceto: falla.properties.boceto,
+          fallasDataInDictionary[properties.id] = {
+          id: properties.id,
+          nombre: properties.nombre,
+          seccion: properties.seccion,
+          fallera: properties.fallera,
+          boceto: properties.boceto,
           visited: visited,
-          latitude: falla.geometry.coordinates[1],
-          longitude: falla.geometry.coordinates[0]
+          latitude: geometry.coordinates[1],
+          longitude: geometry.coordinates[0]
         }})
         setFallasData(fallasDataInDictionary)
 
