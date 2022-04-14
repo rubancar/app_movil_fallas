@@ -74,9 +74,11 @@ const ScreenList = ({ navigation, route }) => {
             distance: distance
         }})
         setFallasData(fallasDataInDictionary)
-        
+
         // transformo el diccionario en un array
-        setFilteredDataSource(Object.values(fallasDataInDictionary))
+        const arrayOrdenadoInicial = Object.values(fallasDataInDictionary)
+        ordenarPorNombre(arrayOrdenadoInicial, "seccion")
+        setFilteredDataSource(arrayOrdenadoInicial)
 
         //setMasterDataSource(deepCloneData);
 
