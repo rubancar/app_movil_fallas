@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago } from '../libs/ManageData';
 import * as Location from 'expo-location';
+
+import { SearchBar } from 'react-native-elements';
 
 
 // Para recoger las variables enviadas mediante el navigation.navigate debemos recoger el objeto route ({route.params.myVariable})
 const ScreenList = ({ navigation, route }) => {
 
     console.log("**********************************************")
-    console.log(route.params.JSON_DATA[0].properties.nombre)
+    //console.log(route.params.JSON_DATA[0].properties.nombre)
 
     const [fallasData, setFallasData] = useState(null);
 
@@ -22,6 +24,11 @@ const ScreenList = ({ navigation, route }) => {
             return a < b ? -1 : a > b ? 1 : 0;
         });
     }
+
+
+    const [search, setSearch] = useState('');
+    const [filteredDataSource, setFilteredDataSource] = useState([]);
+    const [masterDataSource, setMasterDataSource] = useState([]);
 
 
 
@@ -63,7 +70,36 @@ const ScreenList = ({ navigation, route }) => {
         }})
         setFallasData(fallasDataInDictionary)
 
+        setFilteredDataSource(arrayData);
+        //setMasterDataSource(deepCloneData);
+
     }, []);
+
+    const searchFilterFunction = (text) => {
+        console.log("Filtrando...")
+        // Check if searched text is not blank
+        if (text) {
+            console.log("Hay texto"+text)
+          // Inserted text is not blank
+          // Filter the masterDataSource
+          // Update FilteredDataSource
+          const newData = arrayData.filter(function (item) {
+            const itemData = item.nombre
+              ? item.nombre.toUpperCase()
+              : ''.toUpperCase();
+            const textData = text.toUpperCase();
+            return itemData.indexOf(textData) > -1;
+          });
+          setFilteredDataSource(newData);
+          setSearch(text);
+        } else {
+            console.log("NO texto"+text)
+          // Inserted text is blank
+          // Update FilteredDataSource with masterDataSource
+          setFilteredDataSource(arrayData);
+          setSearch(text);
+        }
+      };
 
 
     const saveFallaAsVisited = (fallaId) => {
@@ -146,12 +182,21 @@ const ScreenList = ({ navigation, route }) => {
     }
 
     return (
+        <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
+        <SearchBar
+          round
+          searchIcon={{ size: 24 }}
+          onChangeText={(text) => searchFilterFunction(text)}
+          onClear={(text) => searchFilterFunction('')}
+          placeholder="Type Here..."
+          value={search}
+        />
             {/** Revisar los visitados.... */}
             {
-                arrayData && 
+                filteredDataSource && 
                 <FlatList
-                    data={arrayData}
+                    data={filteredDataSource}
                     renderItem={VLCitem}
                     keyExtractor={item => item.id}
                     initialNumToRender={20}
@@ -161,6 +206,7 @@ const ScreenList = ({ navigation, route }) => {
             }
             
         </View>
+        </SafeAreaView>
     );
 };
 
