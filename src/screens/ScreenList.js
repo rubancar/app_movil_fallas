@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago } from '../libs/ManageData';
+import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago, colors } from '../libs/ManageData';
 import * as Location from 'expo-location';
 
 import { SearchBar } from 'react-native-elements';
@@ -70,6 +70,7 @@ const ScreenList = ({ navigation, route }) => {
             seccion: properties.seccion,
             fallera: properties.fallera,
             boceto: properties.boceto,
+            presidente: properties.presidente,
             visited: visited,
             distance: distance
         }})
@@ -196,14 +197,7 @@ const ScreenList = ({ navigation, route }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
-            <SearchBar
-                round
-                searchIcon={{ size: 24 }}
-                onChangeText={(text) => searchFilterFunction(text)}
-                onClear={(text) => searchFilterFunction('')}
-                placeholder="Type Here..."
-                value={search}
-            />
+            
             {/** Revisar los visitados.... */}
             {
                 filteredDataSource && 
@@ -216,7 +210,14 @@ const ScreenList = ({ navigation, route }) => {
                     windowSize={10}
                 />
             }
-            
+            <SearchBar
+                round
+                searchIcon={{ size: 24 }}
+                onChangeText={(text) => searchFilterFunction(text)}
+                onClear={(text) => searchFilterFunction('')}
+                placeholder="Type Here..."
+                value={search}
+            />
         </View>
         </SafeAreaView>
     );

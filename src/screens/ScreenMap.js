@@ -45,6 +45,7 @@ const ScreenMap = ({ navigation, route }) => {
           seccion: properties.seccion,
           fallera: properties.fallera,
           boceto: properties.boceto,
+          presidente: properties.presidente,
           visited: visited,
           latitude: geometry.coordinates[1],
           longitude: geometry.coordinates[0]

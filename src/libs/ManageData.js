@@ -61,10 +61,19 @@ register('es_ES', (number, index, total_sec) => [
 
 const timeago = datetime => format(datetime, 'es_ES');
 
+const colors = {
+    black: "#000000",
+    white: "#FFFFFF",
+    blue: "#0097D8",
+    yellow: "FFDF1B",
+    naranja: "#D18817",
+    red: "#EE3524"
+}
 
 export {
     setFallaAsVisited,
     getVisitedFallas,
     distanceBetween2Points,
-    timeago
+    timeago,
+    colors
 }

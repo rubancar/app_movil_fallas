@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { TextInput, StyleSheet, Text, View, Button, Alert, StatusBar } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { colors } from '../libs/ManageData';
 
 const Login = ({ navigation, route }) => {
 
@@ -67,7 +68,7 @@ const Login = ({ navigation, route }) => {
 
         <Button
           title="Entrar"
-          
+          color={colors.blue}
           // Para cambiar de screen => Home - Opcion 1. Con esta opcion se fuerza el renderizado
           
           onPress={() => {
@@ -94,13 +95,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: 'center',
     padding: 40,
-    backgroundColor: '#f7913d',
+    backgroundColor: colors.naranja
+    //backgroundColor: '#f7913d',
   },
   welcome_text: {
     marginBottom: 20,
     fontSize: 30,
     fontWeight: "bold",
-    textAlign: "center",
+    textAlign: "center"
   },
   label_input: {
     fontSize: 15,
