@@ -46,14 +46,19 @@ const ScreenList = ({ navigation, route }) => {
         let locationUser = await Location.getCurrentPositionAsync({})
         const { coords: { latitude, longitude } } = locationUser
 
+        // copia los datos desde el route.params.JSON_DATA
         const deepCloneData = JSON.parse(JSON.stringify(route.params.JSON_DATA));
         const fallasDataInDictionary = {}
+
+        // consulto a localStorage las fallas ya visitadas
         const visitedFallas = await getVisitedFallas()
         deepCloneData.forEach( falla => {
 
             const { properties, geometry: { coordinates } } = falla
 
             let visited = null
+
+            // calculo la distancia desde mi ubicación actual a cada una de las fallas
             let distance = distanceBetween2Points(latitude, longitude, coordinates[1], coordinates[0]).toFixed(2)
             if (properties.id in visitedFallas) {
                 visited = visitedFallas[properties.id]
@@ -69,8 +74,10 @@ const ScreenList = ({ navigation, route }) => {
             distance: distance
         }})
         setFallasData(fallasDataInDictionary)
+        
+        // transformo el diccionario en un array
+        setFilteredDataSource(Object.values(fallasDataInDictionary))
 
-        setFilteredDataSource(arrayData);
         //setMasterDataSource(deepCloneData);
 
     }, []);
@@ -177,21 +184,24 @@ const ScreenList = ({ navigation, route }) => {
 
     let arrayData = null
     if(fallasData) { 
+        // Cambia de diccionario a una lista
         arrayData = Object.values(fallasData)
+
+        // Se ordena la lista por nombres
         ordenarPorNombre(arrayData, "seccion")
     }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
-        <SearchBar
-          round
-          searchIcon={{ size: 24 }}
-          onChangeText={(text) => searchFilterFunction(text)}
-          onClear={(text) => searchFilterFunction('')}
-          placeholder="Type Here..."
-          value={search}
-        />
+            <SearchBar
+                round
+                searchIcon={{ size: 24 }}
+                onChangeText={(text) => searchFilterFunction(text)}
+                onClear={(text) => searchFilterFunction('')}
+                placeholder="Type Here..."
+                value={search}
+            />
             {/** Revisar los visitados.... */}
             {
                 filteredDataSource && 

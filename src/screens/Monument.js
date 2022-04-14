@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, View, Button, StyleSheet, Image } from 'react-native';
-import { StackActions } from '@react-navigation/native';
 import { timeago } from '../libs/ManageData';
 
 const Monument = ({ navigation, route }) => {
