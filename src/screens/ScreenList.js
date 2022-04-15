@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago } from '../libs/ManageData';
 import * as Location from 'expo-location';
 
@@ -10,49 +11,65 @@ import { SearchBar } from 'react-native-elements';
 // Para recoger las variables enviadas mediante el navigation.navigate debemos recoger el objeto route ({route.params.myVariable})
 const ScreenList = ({ navigation, route }) => {
 
-    console.log("**********************************************")
+    //console.log("**********************************************")
     //console.log(route.params.JSON_DATA[0].properties.nombre)
 
+    // Variable donde almacenaremos la info de las fallas
     const [fallasData, setFallasData] = useState(null);
 
-    // Funcion para ordenar
-    const ordenarPorNombre = (array, campo) => {
-        array.sort(function (a, b) {
-            a = a[campo].toLowerCase();
-            b = b[campo].toLowerCase();
+    // Variable donde almacenaremos el campo y el tipo de ordenado de la lista
+    // Estas variables se utilizaran para reordenar la lista despues de cada busqueda
+    const [campoActual, setCampoActual] = useState(null);
+    const [ordenActual, setOrdenActual] = useState(null);
 
-            return a < b ? -1 : a > b ? 1 : 0;
+    // Variables que utilizaremos para el searchbar
+    const [search, setSearch] = useState(''); // Contiene la busqueda
+    const [filteredDataSource, setFilteredDataSource] = useState([]); // Contiene la lista filtrada segun la busqueda
+
+    // Funcion para ordenar
+    const ordenarPorCampo = (array, campo, order) => {
+        array.sort(function (a, b) {
+            // Con la linea de normalize eliminamos los acentos
+            a = a[campo].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            b = b[campo].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            // Comprobamos cual es el tipo de ordenado que se desea aplicar 
+            if (order==="asc"){
+                return a < b ? -1 : a > b ? 1 : 0;
+            }
+            else{
+                return b < a ? -1 : b > a ? 1 : 0;
+            }     
         });
+
+        // Definimos las variables de campo y orden despues de cada busqueda
+        setCampoActual(campo)
+        setOrdenActual(order)
+
+        // Actualizamos el Flatlist filtrado
+        const arrayFiltrado = Object.values(array)
+        setFilteredDataSource(arrayFiltrado)
     }
 
-
-    const [search, setSearch] = useState('');
-    const [filteredDataSource, setFilteredDataSource] = useState([]);
-    const [masterDataSource, setMasterDataSource] = useState([]);
-
-
-
-    // ejecuta la 1ra vez que entra al componenente
+    // Se ejecuta la 1ra vez que entra al componenente
     useEffect(async () => {
-
         // esto se ejecuta en background
-        
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
             console.error('Permission to access location was denied');
             return;
         }
-    
+
         let locationUser = await Location.getCurrentPositionAsync({})
         const { coords: { latitude, longitude } } = locationUser
 
-        // copia los datos desde el route.params.JSON_DATA
+        // Copia los datos desde el route.params.JSON_DATA
         const deepCloneData = JSON.parse(JSON.stringify(route.params.JSON_DATA));
         const fallasDataInDictionary = {}
 
-        // consulto a localStorage las fallas ya visitadas
+        // Consulto a localStorage las fallas ya visitadas
         const visitedFallas = await getVisitedFallas()
-        deepCloneData.forEach( falla => {
+        deepCloneData.forEach(falla => {
 
             const { properties, geometry: { coordinates } } = falla
 
@@ -65,62 +82,94 @@ const ScreenList = ({ navigation, route }) => {
             }
 
             fallasDataInDictionary[falla.properties.id] = {
-            id: properties.id,
-            nombre: properties.nombre,
-            seccion: properties.seccion,
-            fallera: properties.fallera,
-            boceto: properties.boceto,
-            visited: visited,
-            distance: distance
-        }})
+                id: properties.id,
+                nombre: properties.nombre,
+                seccion: properties.seccion,
+                fallera: properties.fallera,
+                boceto: properties.boceto,
+                visited: visited,
+                distance: distance
+            }
+        })
+        // Actualizamos nuetra lista de fallas
         setFallasData(fallasDataInDictionary)
 
-        // transformo el diccionario en un array
+        // Transformo el diccionario en un array para mejorar la velocidad de su consulta
         const arrayOrdenadoInicial = Object.values(fallasDataInDictionary)
-        ordenarPorNombre(arrayOrdenadoInicial, "seccion")
-        setFilteredDataSource(arrayOrdenadoInicial)
 
-        //setMasterDataSource(deepCloneData);
+        // Por defecto ordenaremos la lista segun la seccion
+        ordenarPorCampo(arrayOrdenadoInicial, "seccion", "asc")
+
+        // Copiamos la info de las fallas en la vista filtrada
+        setFilteredDataSource(arrayOrdenadoInicial)
 
     }, []);
 
+    // Funcion para la busqueda del Searchbar
     const searchFilterFunction = (text) => {
         console.log("Filtrando...")
-        // Check if searched text is not blank
+        // Comprobamos que el texto de busqueda no esta en blanco
         if (text) {
-            console.log("Hay texto"+text)
-          // Inserted text is not blank
-          // Filter the masterDataSource
-          // Update FilteredDataSource
-          const newData = arrayData.filter(function (item) {
-            const itemData = item.nombre
-              ? item.nombre.toUpperCase()
-              : ''.toUpperCase();
-            const textData = text.toUpperCase();
-            return itemData.indexOf(textData) > -1;
-          });
-          setFilteredDataSource(newData);
-          setSearch(text);
+            const newData = arrayData.filter(function (item) {
+
+                // Anyadimos como items todos los elementos por los que vamos a buscar
+                const itemData = (item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase());
+                let itemData2 = (item.seccion ? item.seccion.toUpperCase() : ''.toUpperCase());
+
+                // En caso de que la categoria sea E especificamos que se debe buscar como especial
+                if (itemData2 === "E") {
+                    itemData2 = "ESPECIAL";
+                }
+
+                // Comprobamos que visited=true para anyadir a la fila de busqueda el texto "visitados". 
+                // Asi conseguimos que si escribimos "visitados" en la Searchbar se muestren los elementos visitados
+                // Haremos lo mismo con las fallas pendientes de visitar
+                let itemData3 = "";
+                if (item.visited) {
+                    itemData3 = "VISITADOS";
+                }
+                else {
+                    itemData3 = "PENDIENTES";
+                }
+
+                // Concatenamos todos los items de busqueda
+                const itemFinal = itemData + " " + itemData2 + " " + itemData3;
+
+                //console.log("Items: " + itemFinal);
+                const textData = text.toUpperCase();
+                //console.log("textData: " + textData);
+                return itemFinal.indexOf(textData) > -1;
+            });
+            // Filtramos el Flatlist con los elementos que cumplen las busqueda
+            setFilteredDataSource(newData);
+            // Ordenamos por el campo solicitado
+            ordenarPorCampo(newData, campoActual,ordenActual);
+            // Dibujamos la cadena de busqueda
+            setSearch(text);
+            
+
+
         } else {
-            console.log("NO texto"+text)
-          // Inserted text is blank
-          // Update FilteredDataSource with masterDataSource
-          setFilteredDataSource(arrayData);
-          setSearch(text);
+            // Si el texto esta en blanco cargamos nuestro array de fallas al completo
+            setFilteredDataSource(arrayData);
+            // Ordenamos por el campo solicitado
+            ordenarPorCampo(arrayData, campoActual, ordenActual);
+            // Dibujamos la cadena de busqueda
+            setSearch(text);
         }
-      };
+    };
 
-
+    // Funcion para marcar como visitada la falla
     const saveFallaAsVisited = (fallaId) => {
-        const fallasDataInDictionary  = fallasData
+        const fallasDataInDictionary = fallasData
         fallasDataInDictionary[fallaId]["visited"] = new Date().toISOString()
         /** usamos la notación spread operator para crear un nuevo objeto y lanzar que React
-        *   lance un neuvo renderizado */ 
-        setFallasData({...fallasDataInDictionary})
+        *   lance un neuvo renderizado */
+        setFallasData({ ...fallasDataInDictionary })
         setFallaAsVisited(fallaId)
     }
 
-
+    // Funcion que abre el pop de confirmacion para marcar una falla como visitada
     const createAlertDialog = (nameFalla, id) =>
         Alert.alert(
             "Visitar falla",
@@ -136,98 +185,145 @@ const ScreenList = ({ navigation, route }) => {
                     onPress: () => saveFallaAsVisited(id)
                 }
             ]
-    );
+        );
 
+    // Definimos el renderizado de cada una de las filas de nuestra lista 
     const VLCitem = ({ item }) => {
-    
         return (
             <View style={styles.item} key={item.id}>
-                
-                    <View style={styles.fila}>
-    
-                        {/** Color y sección de la falla */}
-                        <TouchableOpacity onPress={() => { navigation.navigate('Monument', { infoMonument: item }) }}>
-                            <View style={styles.fila_info}>
-                                <Text style={[styles.seccion, getBackgroundColor(item.seccion)]}>
-                                    {item.seccion}
-                                </Text>
-        
-                                {/** Nombre de la falla */}
-                                <View>
-                                    <Text style={styles.nombre}>
-                                        {item.nombre}
-                                    </Text>
 
-                                    <Text style={styles.extra_info_list}>
-                                        {
-                                            item.visited ? 
-                                                `Distancia: ${item.distance} km, visitado ${timeago(item.visited, 'es_ES')}` : 
-                                                `Distancia ${item.distance} km`
-                                        }
-                                    </Text>
-                                </View>
-                                
+                <View style={styles.fila}>
+
+                    {/** Color y sección de la falla */}
+                    <TouchableOpacity onPress={() => { navigation.navigate('Monument', { infoMonument: item }) }}>
+                        <View style={styles.fila_info}>
+                            <Text style={[styles.seccion, getBackgroundColor(item.seccion)]}>
+                                {item.seccion}
+                            </Text>
+
+                            {/** Nombre de la falla */}
+                            <View>
+                                <Text style={styles.nombre}>
+                                    {item.nombre}
+                                </Text>
+                                {/** Check de visitado */}
+                                <Text style={styles.extra_info_list}>
+                                    {
+                                        item.visited ?
+                                            `Distancia: ${item.distance} km, visitado ${timeago(item.visited, 'es_ES')}` :
+                                            `Distancia ${item.distance} km`
+                                    }
+                                </Text>
                             </View>
-                        </TouchableOpacity>
-    
-                        {/** Marcador que indica si la falla ha sido visitada o no */}
-                        <TouchableOpacity
-                            // onPress={() => setFallaAsVisited(item.properties.id)}
-                            onPress={() => createAlertDialog(item.nombre, item.id)}
-                            style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
-                            <FontAwesome name={item.visited ? "check" : "circle-thin"} size={25} color="gray" />
-                        </TouchableOpacity>
-                    </View>
-                
+
+                        </View>
+                    </TouchableOpacity>
+
+                    {/** Marcador que indica si la falla ha sido visitada o no */}
+                    <TouchableOpacity
+                        onPress={() => createAlertDialog(item.nombre, item.id)}
+                        style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
+                        <FontAwesome name={item.visited ? "check" : "circle-thin"} size={25} color="gray" />
+                    </TouchableOpacity>
+                </View>
+
             </View>
-    
+
         );
     }
 
+    // Anyadimos la info de las fallas en el array que utilizaremos para consultar cada busqueda
     let arrayData = null
-    if(fallasData) { 
+    if (fallasData) {
         // Cambia de diccionario a una lista
         arrayData = Object.values(fallasData)
-
-        // Se ordena la lista por nombres
-        ordenarPorNombre(arrayData, "seccion")
     }
 
+    // Dibujamos toda la info del listado
     return (
         <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-            <SearchBar
-                round
-                searchIcon={{ size: 24 }}
-                onChangeText={(text) => searchFilterFunction(text)}
-                onClear={(text) => searchFilterFunction('')}
-                placeholder="Type Here..."
-                value={search}
-            />
-            {/** Revisar los visitados.... */}
-            {
-                filteredDataSource && 
-                <FlatList
-                    data={filteredDataSource}
-                    renderItem={VLCitem}
-                    keyExtractor={item => item.id}
-                    initialNumToRender={20}
-                    maxToRenderPerBatch={30}
-                    windowSize={10}
+            <View style={styles.container}>
+                {/** Barra de busqueda */}
+                <SearchBar
+                    round
+                    //inputStyle={{margin: 10, height:50}}
+                    inputStyle={{ fontSize: 14 }}
+                    searchIcon={{ size: 18 }}
+                    onChangeText={(text) => searchFilterFunction(text)}
+                    onClear={(text) => searchFilterFunction('')}
+                    placeholder="Filtra por nombre, sección, vistados, pendientes..."
+                    value={search}
                 />
-            }
-            
-        </View>
+                {/** Modulo de filtrado */}
+                <View style={styles.moduloOrdenado}>
+                    <View style={styles.fila}>
+                        <TouchableOpacity
+                            // onPress={() => setFallaAsVisited(item.properties.id)}
+                            onPress={() => ordenarPorCampo(filteredDataSource, "nombre", "asc")}
+                            style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
+                            <View style={styles.fila}>
+                                <FontAwesome5 name={"sort-alpha-down"} size={25} color="gray" />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.fila}>
+                        <TouchableOpacity
+                            // onPress={() => setFallaAsVisited(item.properties.id)}
+                            onPress={() => ordenarPorCampo(filteredDataSource, "nombre", "desc")}
+                            style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
+                            <View style={styles.fila}>
+                                <FontAwesome5 name={"sort-alpha-up-alt"} size={25} color="gray" />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.fila}>
+                        <TouchableOpacity
+                            // onPress={() => setFallaAsVisited(item.properties.id)}
+                            onPress={() => ordenarPorCampo(filteredDataSource, "distance", "asc")}
+                            style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
+                            <View style={styles.fila}>
+                                <FontAwesome5 name={"sort-amount-down-alt"} size={25} color="gray" />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.fila}>
+                        <TouchableOpacity
+                            // onPress={() => setFallaAsVisited(item.properties.id)}
+                            onPress={() => ordenarPorCampo(filteredDataSource, "distance", "desc")}
+                            style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
+                            <View style={styles.fila}>
+                                <FontAwesome5 name={"sort-amount-up"} size={25} color="gray" />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                {/** Revisar los visitados.... */}
+                {
+                    filteredDataSource &&
+                    <FlatList
+                        data={filteredDataSource}
+                        renderItem={VLCitem}
+                        keyExtractor={item => item.id}
+                        initialNumToRender={20}
+                        maxToRenderPerBatch={30}
+                        windowSize={10}
+                    />
+                }
+
+            </View>
         </SafeAreaView>
     );
 };
 
 
-
+// Definimos los estilos que utilizaremos
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 0
+    },
+    moduloOrdenado:{
+        flexDirection: 'row', justifyContent: 'space-between'
     },
     item: {
         padding: 10,
@@ -253,7 +349,7 @@ const styles = StyleSheet.create({
     },
     seccion: {
         borderWidth: 2,
-        backgroundColor: 'blue',
+        backgroundColor: 'pink',
         borderRadius: 4,
         textAlignVertical: 'center',
         textAlign: 'center',
