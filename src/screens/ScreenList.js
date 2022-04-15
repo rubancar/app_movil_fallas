@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert, SafeAreaView
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago } from '../libs/ManageData';
+import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago, colors } from '../libs/ManageData';
 import * as Location from 'expo-location';
 
 import { SearchBar } from 'react-native-elements';
@@ -87,11 +88,11 @@ const ScreenList = ({ navigation, route }) => {
                 seccion: properties.seccion,
                 fallera: properties.fallera,
                 boceto: properties.boceto,
+                presidente: properties.presidente,
                 visited: visited,
                 distance: distance
             }
         })
-        // Actualizamos nuetra lista de fallas
         setFallasData(fallasDataInDictionary)
 
         // Transformo el diccionario en un array para mejorar la velocidad de su consulta
