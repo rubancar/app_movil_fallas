@@ -40,13 +40,35 @@ const ScreenMap = ({ navigation, route }) => {
           }
 
           fallasDataInDictionary[properties.id] = {
-          id: properties.id,
-          nombre: properties.nombre,
-          seccion: properties.seccion,
-          fallera: properties.fallera,
-          boceto: properties.boceto,
-          presidente: properties.presidente,
-          visited: visited,
+            id: properties.id,
+            nombre: properties.nombre,
+            sector: properties.sector,
+
+            seccion: properties.seccion,
+            fallera: properties.fallera,
+            presidente: properties.presidente,
+            artista: properties.artista,
+            lema: properties.lema,
+            distintivo: properties.distintivo,
+            anyo_fundacion: properties.anyo_fundacion,
+            boceto: properties.boceto,
+
+            seccion_i: properties.seccion_i,
+            fallera_i: properties.fallera_i,
+            presidente_i: properties.presidente_i,
+            artista_i: properties.artista_i,
+            lema_i: properties.lema_i,
+            distintivo_i: properties.distintivo_i,
+            anyo_fundacion_i: properties.anyo_fundacion_i,
+            boceto_i: properties.boceto_i,
+
+            grpro: properties.grpro,
+            grins: properties.grins,
+            proteccion: properties.proteccion,
+            orden: properties.orden,
+
+            visited: visited,
+
           latitude: geometry.coordinates[1],
           longitude: geometry.coordinates[0]
         }})

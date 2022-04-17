@@ -18,9 +18,11 @@ export default class Home extends Component {
     readUsername = async () => {
         try {
             const value = await AsyncStorage.getItem('username');
-            console.log("Usuario leido Home: "+value);
+            console.log("Usuario leido Home: " + value);
             if (value !== null) {
-                this.setState({username: value});
+                console.log("Leyendo usuario:");
+                this.setState({ username: value });
+                console.log(username);
             }
         } catch (error) {
             console.log(error);
@@ -38,7 +40,9 @@ export default class Home extends Component {
 
         return (
             <View style={styles.container}>
-
+                <View style={styles.fila_property_seccion}>
+                    <Text style={styles.falla_property_seccion}>{`Bienvenido ${this.state.username}`}</Text>
+                </View>
 
                 {/* IMAGENES */}
                 <View style={styles.img_container}>
@@ -47,20 +51,21 @@ export default class Home extends Component {
                     <View style={styles.img_box}>
                         <Image source={fallas_1} style={styles.img} resizeMode={'stretch'} />
                     </View>
-
-                    <TouchableOpacity 
-                        activeOpacity={0.7} 
-                        style={[styles.button_box, {marginLeft: StyleSheet.hairlineWidth}]}
-                        onPress={() => this.props.navigation.navigate('ScreenMapList',  { JSON_DATA:this.props.route.params.JSON_DATA })}
-                    >
+                    <View>
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            style={[styles.button_box, { marginLeft: StyleSheet.hairlineWidth }]}
+                            onPress={() => this.props.navigation.navigate('ScreenMapList', { JSON_DATA: this.props.route.params.JSON_DATA })}
+                        >
                             <Text style={styles.button_text} ellipsizeMode='tail' numberOfLines={2}>
-                                {`HOLA ${this.state.username}, VISITA LAS FALLAS`} 
+                                {`¡Visita las fallas!`}
                             </Text>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    </View>
 
-                    
-                        
-                        {/*
+
+
+                    {/*
                         <View style={styles.button}>
                             <Button 
                                 title={`HOLA ${this.state.username}, VISITA LAS FALLAS`} 
@@ -69,7 +74,7 @@ export default class Home extends Component {
                             />
                         </View>
                         */}
-                    
+
 
                     {/* BELOW IMAGE */}
                     <View style={styles.img_box}>
@@ -78,7 +83,7 @@ export default class Home extends Component {
                 </View>
 
                 {/* BUSCAR */}
-               
+
             </View>
         )
     }
@@ -121,12 +126,27 @@ const styles = StyleSheet.create({
         backgroundColor: colors.naranja,
         padding: 10,
         borderRadius: 0,
-        marginLeft: 10
     },
     button_text: {
         color: "#fff",
         fontWeight: 'bold',
-        fontSize: 26,
+        fontSize: 20,
         textAlign: 'center'
-    }
+    },
+    fila_property_seccion: {
+        alignItems: 'center',
+        backgroundColor: colors.white,
+        justifyContent: 'center',
+        borderBottomColor: colors.blue,
+        borderBottomWidth: 2,
+        borderTopColor: colors.blue,
+        borderTopWidth: 2,
+    },
+    falla_property_seccion: {
+        color: colors.blue,
+        fontSize: 16,
+        marginBottom: 10,
+        marginTop: 10,
+        fontWeight: 'bold',
+    },
 });

@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago } from '../libs/ManageData';
+//import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago } from '../libs/ManageData';
 import { setFallaAsVisited, getVisitedFallas, distanceBetween2Points, timeago, colors } from '../libs/ManageData';
 import * as Location from 'expo-location';
 
 import { SearchBar } from 'react-native-elements';
-
 
 // Para recoger las variables enviadas mediante el navigation.navigate debemos recoger el objeto route ({route.params.myVariable})
 const ScreenList = ({ navigation, route }) => {
@@ -35,12 +34,12 @@ const ScreenList = ({ navigation, route }) => {
             b = b[campo].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             // Comprobamos cual es el tipo de ordenado que se desea aplicar 
-            if (order==="asc"){
+            if (order === "asc") {
                 return a < b ? -1 : a > b ? 1 : 0;
             }
-            else{
+            else {
                 return b < a ? -1 : b > a ? 1 : 0;
-            }     
+            }
         });
 
         // Definimos las variables de campo y orden despues de cada busqueda
@@ -85,12 +84,34 @@ const ScreenList = ({ navigation, route }) => {
             fallasDataInDictionary[falla.properties.id] = {
                 id: properties.id,
                 nombre: properties.nombre,
+                sector: properties.sector,
+
                 seccion: properties.seccion,
                 fallera: properties.fallera,
-                boceto: properties.boceto,
                 presidente: properties.presidente,
+                artista: properties.artista,
+                lema: properties.lema,
+                distintivo: properties.distintivo,
+                anyo_fundacion: properties.anyo_fundacion,
+                boceto: properties.boceto,
+
+                seccion_i: properties.seccion_i,
+                fallera_i: properties.fallera_i,
+                presidente_i: properties.presidente_i,
+                artista_i: properties.artista_i,
+                lema_i: properties.lema_i,
+                distintivo_i: properties.distintivo_i,
+                anyo_fundacion_i: properties.anyo_fundacion_i,
+                boceto_i: properties.boceto_i,
+
+                grpro: properties.grpro,
+                grins: properties.grins,
+                proteccion: properties.proteccion,
+                orden: properties.orden,
+
                 visited: visited,
-                distance: distance
+                distance: distance,
+
             }
         })
         setFallasData(fallasDataInDictionary)
@@ -144,10 +165,10 @@ const ScreenList = ({ navigation, route }) => {
             // Filtramos el Flatlist con los elementos que cumplen las busqueda
             setFilteredDataSource(newData);
             // Ordenamos por el campo solicitado
-            ordenarPorCampo(newData, campoActual,ordenActual);
+            ordenarPorCampo(newData, campoActual, ordenActual);
             // Dibujamos la cadena de busqueda
             setSearch(text);
-            
+
 
 
         } else {
@@ -248,8 +269,10 @@ const ScreenList = ({ navigation, route }) => {
                 <SearchBar
                     round
                     //inputStyle={{margin: 10, height:50}}
-                    inputStyle={{ fontSize: 14 }}
-                    searchIcon={{ size: 18 }}
+                    containerStyle={{ backgroundColor: colors.white, borderTopColor: colors.blue, borderBottomColor: colors.blue, borderTopWidth: 2, borderBottomWidth: 1 }}
+                    inputContainerStyle={{ backgroundColor: 'white' }}
+                    inputStyle={{ fontSize: 14, borderColor: 'red', height: 30 }}
+                    searchIcon={{ size: 20, color: colors.blue }}
                     onChangeText={(text) => searchFilterFunction(text)}
                     onClear={(text) => searchFilterFunction('')}
                     placeholder="Filtra por nombre, sección, vistados, pendientes..."
@@ -263,7 +286,7 @@ const ScreenList = ({ navigation, route }) => {
                             onPress={() => ordenarPorCampo(filteredDataSource, "nombre", "asc")}
                             style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
                             <View style={styles.fila}>
-                                <FontAwesome5 name={"sort-alpha-down"} size={25} color="gray" />
+                                <FontAwesome5 name={"sort-alpha-down"} size={25} color={colors.blue} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -273,7 +296,7 @@ const ScreenList = ({ navigation, route }) => {
                             onPress={() => ordenarPorCampo(filteredDataSource, "nombre", "desc")}
                             style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
                             <View style={styles.fila}>
-                                <FontAwesome5 name={"sort-alpha-up-alt"} size={25} color="gray" />
+                                <FontAwesome5 name={"sort-alpha-up-alt"} size={25} color={colors.blue} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -283,7 +306,7 @@ const ScreenList = ({ navigation, route }) => {
                             onPress={() => ordenarPorCampo(filteredDataSource, "distance", "asc")}
                             style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
                             <View style={styles.fila}>
-                                <FontAwesome5 name={"sort-amount-down-alt"} size={25} color="gray" />
+                                <FontAwesome5 name={"sort-amount-down-alt"} size={25} color={colors.blue} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -293,7 +316,7 @@ const ScreenList = ({ navigation, route }) => {
                             onPress={() => ordenarPorCampo(filteredDataSource, "distance", "desc")}
                             style={{ paddingTop: 2, paddingBottom: 0, paddingLeft: 10, paddingRight: 10 }}>
                             <View style={styles.fila}>
-                                <FontAwesome5 name={"sort-amount-up"} size={25} color="gray" />
+                                <FontAwesome5 name={"sort-amount-up"} size={25} color={colors.blue} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -323,8 +346,8 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 0
     },
-    moduloOrdenado:{
-        flexDirection: 'row', justifyContent: 'space-between'
+    moduloOrdenado: {
+        flexDirection: 'row', justifyContent: 'space-between', borderWidth: 4, borderTopColor: colors.blue, borderBottomColor: colors.blue, borderTopWidth: 1, borderBottomWidth: 2, borderRightWidth: 1, borderLeftWidth: 1, backgroundColor: colors.white
     },
     item: {
         padding: 10,

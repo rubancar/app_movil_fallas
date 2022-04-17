@@ -11,14 +11,8 @@ export default function ScreenMapList({ route, navigation }) {
 
 
     return (
-        <Tab.Navigator tabBarOptions={{
-            activeTintColor: '#fff',
-            inactiveTintColor: 'lightgray',
-            style: {
-                backgroundColor: colors.naranja,
-                paddingBottom: 3
-            }
-         }}
+        <Tab.Navigator 
+        //tabBarOptions={{activeTintColor: '#fff',inactiveTintColor: 'lightgray',style: {backgroundColor: colors.naranja,paddingBottom: 3}}}
         >
             <Tab.Screen name="Listado" >
                 {() => <ScreenList route={route} navigation={navigation} />}

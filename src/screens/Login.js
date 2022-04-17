@@ -48,12 +48,12 @@ const Login = ({ navigation, route }) => {
 
       <View>
         {/* Para enlazar un style simplemente debemos hacer style.nombreConstEstilo */}
-        <Text style={styles.welcome_text}>¡Bienvenido!</Text>
+        <Text style={styles.welcome_text}>¡Bienvenido a ReactingFalles!</Text>
 
         <View style={styles.view_input}>
-          <Text style={styles.label_input}>Usuario</Text>
           <TextInput 
             style={styles.input}
+            placeholder="Tu usuario"
             // Anyadimos el evento de onChangeText para anyadir el texto introducido en el TextInput
             onChangeText={text => setMyText(text)}
             value={myText}
@@ -68,7 +68,7 @@ const Login = ({ navigation, route }) => {
 
         <Button
           title="Entrar"
-          color={colors.blue}
+          color={colors.naranja}
           // Para cambiar de screen => Home - Opcion 1. Con esta opcion se fuerza el renderizado
           
           onPress={() => {
@@ -95,33 +95,39 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: 'center',
     padding: 40,
-    backgroundColor: colors.naranja
+    backgroundColor: colors.blue
     //backgroundColor: '#f7913d',
   },
   welcome_text: {
     marginBottom: 20,
     fontSize: 30,
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    color:colors.white,
   },
   label_input: {
     fontSize: 15,
     fontWeight: "bold",
     paddingBottom: 12,
     width: 100,
+    
   },
   input: {
-    height: 25,
+    height: 36,
     marginBottom: 10,
     borderWidth: 1,
     flexGrow: 1,
     backgroundColor: 'white',
-    borderColor: 'white',
+    borderColor: colors.white,
+    textAlign:'center',
+    marginBottom:40,
   },
   view_input: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
+    marginTop:4,
+    
   },
 });
 
