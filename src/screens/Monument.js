@@ -19,7 +19,6 @@ const Monument = ({ navigation, route }) => {
     literalProteccion="No";
   }
   return (
-
     <View style={styles.container}>
       <View style={styles.fila_title}>
         <Text style={styles.title}>Falla {infoMonument.nombre}</Text>
