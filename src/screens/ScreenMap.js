@@ -27,8 +27,11 @@ const ScreenMap = ({ navigation, route }) => {
           setLocation(location_);
         })();
 
+        // Copia los datos desde el route.params.JSON_DATA
         const deepCloneData = JSON.parse(JSON.stringify(route.params.JSON_DATA));
         const fallasDataInDictionary = {}
+
+         // Consulto a localStorage las fallas ya visitadas
         const visitedFallas = await getVisitedFallas()
         deepCloneData.forEach( falla => {
 

@@ -44,6 +44,7 @@ const Monument = ({ navigation, route }) => {
 
           <View style={styles.fila_property}>
             <Text style={styles.falla_property_left}>Fallera</Text>
+            {/*Mediante este if comprobamos si las variables estan vacias para sustituirlas por la cadena NO HAY*/}
             <Text style={styles.falla_property_right}> {!infoMonument.fallera ? "NO HAY" : infoMonument.fallera}</Text>
           </View>
           <View style={styles.fila_property}>
@@ -142,10 +143,7 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-    //backgroundColor: 'pink',
-    //marginHorizontal: 20,
     marginBottom : 100,
-    //paddingBottom:100,
   },
   image: {
     width: "100%",
@@ -179,9 +177,6 @@ const styles = StyleSheet.create({
   },
 
   fila_title: {
-    //borderBottomColor:colors.blue,
-    //borderBottomWidth: 2,
-    //marginBottom:2,
     paddingBottom: 5,
     paddingTop: 5,
     backgroundColor: colors.white,
@@ -189,7 +184,6 @@ const styles = StyleSheet.create({
   },
   falla_property: {
     fontSize: 20,
-    //textAlign: "left",
   },
   falla_property_seccion: {
     color: colors.blue,

@@ -129,7 +129,7 @@ const ScreenList = ({ navigation, route }) => {
 
     // Funcion para la busqueda del Searchbar
     const searchFilterFunction = (text) => {
-        console.log("Filtrando...")
+        //console.log("Filtrando...")
         // Comprobamos que el texto de busqueda no esta en blanco
         if (text) {
             const newData = arrayData.filter(function (item) {

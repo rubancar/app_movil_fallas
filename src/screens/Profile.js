@@ -14,13 +14,12 @@ import { createNativeWrapper } from 'react-native-gesture-handler';
 
 const Profile = ({ navigation, route }) => {
 
-
+    // Variable que se utilizara para almacenar la img que se compartira
     let [selectedImage, setSelectedImage] = React.useState(null);
-
-
 
     const [username, setUsername] = useState('');
 
+    // Funcion para guardar el usuario
     const saveText = async (usuario) => {
         try {
             // AsyncStorage implementa una persistencia de datos local que siempre es del tipo clave-valor
@@ -32,6 +31,7 @@ const Profile = ({ navigation, route }) => {
         }
     };
 
+    // Funcion para leer el usuario
     const readUsername = async () => {
         try {
             const value = await AsyncStorage.getItem('username');
@@ -49,11 +49,13 @@ const Profile = ({ navigation, route }) => {
         readUsername();
     }, []);
 
+
+    // Bloque para gestionar la posibilidad de compartir informacion
     let openImagePickerAsync = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (permissionResult.granted === false) {
-            alert('Permission to access camera roll is required!');
+            alert('El permiso para acceder a la camana es necesario!');
             return;
         }
 
@@ -67,13 +69,14 @@ const Profile = ({ navigation, route }) => {
 
     let openShareDialogAsync = async () => {
         if (!(await Sharing.isAvailableAsync())) {
-            alert(`Uh oh, sharing isn't available on your platform`);
+            alert(`El modo compartir no esta disponible en tu plataforma`);
             return;
         }
 
         await Sharing.shareAsync(selectedImage.localUri);
     };
 
+    // Esta es la vista que se mostrara despues de seleccionar la imagen que se desea compartir
     if (selectedImage !== null) {
         return (
             <View style={styles.container}>
@@ -97,9 +100,8 @@ const Profile = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-
             <View style={styles.fila_property_seccion}>
-                <Text style={styles.falla_property_seccion}>Falla Major</Text>
+                <Text style={styles.falla_property_seccion}>Opciones de usuario</Text>
             </View>
             <View style={styles.cuerpoSeccion}>
                 <Text style={styles.textoCuerpoSeccion}> Hola {username}, ¿deseas cambiar tu nombre de usuario? </Text>
@@ -114,9 +116,6 @@ const Profile = ({ navigation, route }) => {
 
                         title="Modificar"
                         color={colors.naranja}
-                        // Para cambiar de screen => Home - =Opcion 2. El navigate tambien permite un segundo parametro para enviar informacion del tipo clave-valor (myData1: 1, myMessage: msg)
-                        // Cuando se pulse el boton Entrar guardaremos el valor de myText
-                        //onPress={() => { saveText(username); navigation.navigate('Home') }}
 
                         onPress={() => {
                             // Cuando se pulse el boton Modificarar guardaremos le nuevo nombre del usuario
@@ -127,13 +126,6 @@ const Profile = ({ navigation, route }) => {
                                 target: navigation.getState().key,
                             })
                         }}
-                    />
-                </View>
-                <View style={styles.botonesPerfil}>
-                    <Button
-                        title="Limpiar datos"
-                        color={colors.naranja}
-                        onPress={() => AsyncStorage.clear().then(() => console.log('Cleared'))}
                     />
                 </View>
             </View>

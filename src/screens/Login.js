@@ -11,6 +11,7 @@ const Login = ({ navigation, route }) => {
 
   const [JSON_DATA, setJSON_DATA] = useState('');
 
+  // Funcion para cargar la info del Json
   const loadData = () => {
       fetch('https://mapas.valencia.es/lanzadera/opendata/Monumentos_falleros/JSON?srsName=EPSG:4326')
           .then((response) => response.json())
@@ -52,6 +53,7 @@ const Login = ({ navigation, route }) => {
 
         <View style={styles.view_input}>
           <TextInput 
+            name="campoUsuario"
             style={styles.input}
             placeholder="Tu usuario"
             // Anyadimos el evento de onChangeText para anyadir el texto introducido en el TextInput
@@ -69,6 +71,8 @@ const Login = ({ navigation, route }) => {
         <Button
           title="Entrar"
           color={colors.naranja}
+          // Deshabilitamos el boton en caso de que myText este vacio
+          disabled={(!myText)}
           // Para cambiar de screen => Home - Opcion 1. Con esta opcion se fuerza el renderizado
           
           onPress={() => {
