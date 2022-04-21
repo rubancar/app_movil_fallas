@@ -22,7 +22,6 @@ export default class Home extends Component {
             if (value !== null) {
                 console.log("Leyendo usuario:");
                 this.setState({ username: value });
-                console.log(username);
             }
         } catch (error) {
             console.log(error);
@@ -32,6 +31,17 @@ export default class Home extends Component {
 
     componentDidMount() {
         this.readUsername();
+
+        // Según este tutorial podemos agregar un listener al prop de navigation de tal forma que al llegar a esta pantalla
+        // generemos un evento de focus y podemos actualizar cosas
+        // https://reactnavigation.org/docs/navigation-events/
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.readUsername()
+        });
+    }
+
+    componentWillUnmount() {
+        this._unsubscribe();
     }
 
 
@@ -62,18 +72,6 @@ export default class Home extends Component {
                             </Text>
                         </TouchableOpacity>
                     </View>
-
-
-
-                    {/*
-                        <View style={styles.button}>
-                            <Button 
-                                title={`HOLA ${this.state.username}, VISITA LAS FALLAS`} 
-                                type="success" 
-                                onPress={() => this.props.navigation.navigate('ScreenMapList',  { JSON_DATA:this.props.route.params.JSON_DATA })}
-                            />
-                        </View>
-                        */}
 
 
                     {/* BELOW IMAGE */}

@@ -120,11 +120,6 @@ const Profile = ({ navigation, route }) => {
                         onPress={() => {
                             // Cuando se pulse el boton Modificarar guardaremos le nuevo nombre del usuario
                             saveText(username);
-                            navigation.dispatch({
-                                ...StackActions.replace('Home'),
-                                source: route.key,
-                                target: navigation.getState().key,
-                            })
                         }}
                     />
                 </View>
