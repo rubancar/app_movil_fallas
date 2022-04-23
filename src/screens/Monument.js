@@ -1,7 +1,5 @@
 import React from 'react';
-import { Text, View, Button, StyleSheet, Image, Share, TouchableOpacity, Platform, SafeAreaView, ScrollView, StatusBar } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as Sharing from 'expo-sharing';
+import { Text, View, StyleSheet, Image, SafeAreaView, ScrollView } from 'react-native';
 import { colors, timeago } from '../libs/ManageData';
 
 const Monument = ({ navigation, route }) => {

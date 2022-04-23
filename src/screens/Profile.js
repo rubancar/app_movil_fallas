@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StackActions } from '@react-navigation/native';
-import { TextInput, StyleSheet, Text, View, Button, TouchableOpacity, Image, Share, Platform } from 'react-native';
+import { TextInput, StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import { colors } from '../libs/ManageData';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { createNativeWrapper } from 'react-native-gesture-handler';
-
-//import { Text, View, Button, StyleSheet, Image, Share, TouchableOpacity, Platform, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 
 
 const Profile = ({ navigation, route }) => {

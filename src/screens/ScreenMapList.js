@@ -2,7 +2,6 @@ import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ScreenList from './ScreenList';
 import ScreenMap from './ScreenMap';
-import { colors } from '../libs/ManageData';
 
 
 const Tab = createMaterialTopTabNavigator();
