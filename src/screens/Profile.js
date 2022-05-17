@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextInput, StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { StackActions } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import { colors } from '../libs/ManageData';
@@ -34,6 +34,17 @@ const Profile = ({ navigation, route }) => {
             if (value !== null) {
                 setUsername(value);
             }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Funcion para hacer logout
+    const logout = async () => {
+        try {
+            navigation.dispatch({
+                ...StackActions.replace('Login')
+            })
         } catch (error) {
             console.log(error);
         }
@@ -115,6 +126,19 @@ const Profile = ({ navigation, route }) => {
                         onPress={() => {
                             // Cuando se pulse el boton Modificarar guardaremos le nuevo nombre del usuario
                             saveText(username);
+                        }}
+                    />
+                </View>
+
+                <View style={styles.botonesPerfil}>
+                    <Button
+
+                        title="Salir"
+                        color={colors.naranja}
+
+                        onPress={() => {
+                            // Cuando se pulse el boton Modificarar guardaremos le nuevo nombre del usuario
+                            logout();
                         }}
                     />
                 </View>
