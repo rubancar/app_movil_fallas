@@ -33,6 +33,11 @@ const ScreenList = ({ navigation, route }) => {
             a = a[campo].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             b = b[campo].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+            if(campo === "distance") {
+                a = parseFloat(a);
+                b = parseFloat(b);
+            }
+
             // Comprobamos cual es el tipo de ordenado que se desea aplicar 
             if (order === "asc") {
                 return a < b ? -1 : a > b ? 1 : 0;
